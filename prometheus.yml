@@ -1,0 +1,17 @@
+scrape_configs:
+  - job_name: app
+    metrics_path: /metrics
+    scheme: http
+    static_configs:
+      - targets:
+        - app:80
+        labels:
+          app: flask
+  - job_name: haproxy
+    metrics_path: /metrics
+    scheme: http
+    static_configs:
+      - targets:
+        - haproxy-exporter:9101
+        labels:
+          app: haproxy

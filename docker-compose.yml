@@ -1,0 +1,38 @@
+version: '3'
+services:
+  app:
+    image: assisken/service-weather
+    environment:
+      - API_KEY=e1f7845cff6a49b73a89c76a6e6d71f5
+
+  haproxy:
+    image: haproxy:2.3
+    ports:
+      - 80:80
+    volumes:
+    - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    depends_on:
+      - app
+
+  haproxy-exporter:
+    image: prom/haproxy-exporter
+    command: >
+      --haproxy.scrape-uri="http://haproxy:8080/?stats;csv"
+    depends_on:
+      - haproxy
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+    - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_USER=user
+      - GF_SECURITY_ADMIN_PASSWORD=qwerty
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
