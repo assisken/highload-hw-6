@@ -4,6 +4,7 @@
 ```bash
 git clone https://github.com/assisken/highload-hw-6.git
 cd highload-hw-6
+docker ps -a | tr -s ' ' | tail -n +2 | cut -d' ' -f1 | xargs docker rm --force
 docker-compose up
 ```
 
